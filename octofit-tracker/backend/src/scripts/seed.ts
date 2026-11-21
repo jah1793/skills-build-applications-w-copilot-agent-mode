@@ -44,6 +44,12 @@ export async function seed() {
       { $set: { user: hubot._id, team: robocats._id, type: 'cycle', minutes: 25, points: 25, occurredAt: hubotCycleAt } },
       { upsert: true },
     );
+    const monaStrengthAt = new Date('2026-01-12T12:00:00.000Z');
+    await Activity.updateOne(
+      { user: mona._id, team: octocats._id, type: 'strength', occurredAt: monaStrengthAt },
+      { $set: { user: mona._id, team: octocats._id, type: 'strength', minutes: 20, points: 20, occurredAt: monaStrengthAt } },
+      { upsert: true },
+    );
     await Workout.updateOne(
       { title: 'Intervals' },
       { $set: { title: 'Intervals', focus: 'endurance', minutes: 30, difficulty: 'moderate' } },
@@ -52,6 +58,11 @@ export async function seed() {
     await Workout.updateOne(
       { title: 'Strength Circuit' },
       { $set: { title: 'Strength Circuit', focus: 'strength', minutes: 30, difficulty: 'moderate' } },
+      { upsert: true },
+    );
+    await Workout.updateOne(
+      { title: 'Mobility Flow' },
+      { $set: { title: 'Mobility Flow', focus: 'mobility', minutes: 20, difficulty: 'easy' } },
       { upsert: true },
     );
   } finally {
