@@ -9,6 +9,37 @@ type Props<T> = {
   renderItems: (data: T) => ReactNode;
 };
 
+type ViewProps<T> = Omit<Props<T>, 'path'> & {
+  data: T | null;
+  loading: boolean;
+  error: string;
+};
+
+export function CapabilityCardView<T>({
+  title,
+  description,
+  emptyText,
+  renderItems,
+  data,
+  loading,
+  error,
+}: ViewProps<T>) {
+  return (
+    <section className="card h-100">
+      <div className="card-body">
+        <h2 className="h4">{title}</h2>
+        <p>{description}</p>
+        {loading && <p role="status">Loading {title.toLowerCase()}...</p>}
+        {error && <p role="alert">Unable to load {title.toLowerCase()}: {error}</p>}
+        {!loading && !error && data && renderItems(data)}
+        {!loading && !error && data && emptyText && (
+          <p className="empty-content d-none">{emptyText}</p>
+        )}
+      </div>
+    </section>
+  );
+}
+
 export function CapabilityCard<T>({ title, description, path, emptyText, renderItems }: Props<T>) {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
@@ -35,17 +66,14 @@ export function CapabilityCard<T>({ title, description, path, emptyText, renderI
   }, [path]);
 
   return (
-    <section className="card h-100">
-      <div className="card-body">
-        <h2 className="h4">{title}</h2>
-        <p>{description}</p>
-        {loading && <p role="status">Loading {title.toLowerCase()}...</p>}
-        {error && <p role="alert">Unable to load {title.toLowerCase()}: {error}</p>}
-        {!loading && !error && data && renderItems(data)}
-        {!loading && !error && data && emptyText && (
-          <p className="empty-content d-none">{emptyText}</p>
-        )}
-      </div>
-    </section>
+    <CapabilityCardView
+      title={title}
+      description={description}
+      emptyText={emptyText}
+      renderItems={renderItems}
+      data={data}
+      loading={loading}
+      error={error}
+    />
   );
 }
